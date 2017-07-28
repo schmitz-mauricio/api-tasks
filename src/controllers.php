@@ -25,7 +25,7 @@ $app->after(function (Request $request, Response $response) {
 $app->before(function($request, $app) use ($app, $em) {
     //Verify if content type is json
     if (strpos($request->headers->get('Content-Type'), 'application/json')!==0) {
-        return $app->json(array('error' => 'Invalid Header Content-Type'), 201);
+        return $app->json(array('error' => 'Invalid Header Content-Type'), 200);
     }else{
         $data = json_decode($request->getContent(), true);
         $request->request->replace(is_array($data) ? $data : array());
@@ -48,7 +48,7 @@ $app->mount('/api/v1', function ($api) use ($app, $em){
         $tasks = $em->getRepository(Task::class)->getAllByUser($request->attributes->get('user'));
 
         //return a json result
-        return $app->json($tasks, 201);
+        return $app->json($tasks, 200);
     });
 
     //Find one task by id
@@ -56,7 +56,7 @@ $app->mount('/api/v1', function ($api) use ($app, $em){
         //find task from authenticated user and request id
         $task = $em->getRepository(Task::class)->getByUserAndId($request->attributes->get('user'), $id);
 //        //return a json result
-        return $app->json($task, 201);
+        return $app->json($task, 200);
     });
 
     //Create a task from user request
@@ -77,7 +77,7 @@ $app->mount('/api/v1', function ($api) use ($app, $em){
 
         }catch (Exception $ex){
             var_dump($ex->getMessage());die;
-            return $app->json(array('error' => 'Invalid data sent'), 201);
+            return $app->json(array('error' => 'Invalid data sent'), 200);
         }
     });
 
@@ -99,12 +99,12 @@ $app->mount('/api/v1', function ($api) use ($app, $em){
                 $em->flush();
 
             }catch (Exception $ex){
-                return $app->json(array('error' => 'An error ocurred, please check the API documentation'), 201);
+                return $app->json(array('error' => 'An error ocurred, please check the API documentation'), 200);
 
             }
-            return $app->json(array('success' => 'Update'), 201);
+            return $app->json(array('success' => 'Update'), 200);
         }else{
-            return $app->json(array('error' => 'Task not found'), 201);
+            return $app->json(array('error' => 'Task not found'),  200);
         }
     });
 
@@ -115,9 +115,9 @@ $app->mount('/api/v1', function ($api) use ($app, $em){
         if($task){
             $em->remove($task);
             $em->flush();
-            return $app->json(array('success' => 'Deleted'), 201);
+            return $app->json(array('success' => 'Deleted'), 200);
         }else{
-            return $app->json(array('error' => 'Task not found'), 201);
+            return $app->json(array('error' => 'Task not found'), 200);
         }
 
     });
@@ -126,9 +126,9 @@ $app->mount('/api/v1', function ($api) use ($app, $em){
     $api->put('/tasks', function (Request $request)  use ($app, $em) {
         $task = $em->getRepository(Task::class)->changeOrder(array_reverse($request->get('tasks')));
         if($task){
-            return $app->json(array('success' => 'Tasks reordered'), 201);
+            return $app->json(array('success' => 'Tasks reordered'), 200);
         }else{
-            return $app->json(array('error' => 'Tasks not reordered'), 201);
+            return $app->json(array('error' => 'Tasks not reordered'), 200);
         }
     });
 });
