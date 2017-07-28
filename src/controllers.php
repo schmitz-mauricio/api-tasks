@@ -25,7 +25,7 @@ $app->after(function (Request $request, Response $response) {
 $app->before(function($request, $app) use ($app, $em) {
     //Verify if content type is json
     if (strpos($request->headers->get('Content-Type'), 'application/json')!==0) {
-        return $app->json(array('error' => 'Invalid Header Content-Type'), 200);
+        return $app->json(array('error' => 'Invalid Header Content-Type'), 422);
     }else{
         $data = json_decode($request->getContent(), true);
         $request->request->replace(is_array($data) ? $data : array());
